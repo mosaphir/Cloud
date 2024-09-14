@@ -1,15 +1,26 @@
-import Link from "next/link";
-
-const Home = () => {
+'use client'
+ 
+import { useState, useEffect } from 'react'
+ 
+export function Posts() {
+  const [posts, setPosts] = useState(null)
+ 
+  useEffect(() => {
+    async function fetchPosts() {
+      let res = await fetch('https://api.vercel.app/blog')
+      let data = await res.json()
+      setPosts(data)
+    }
+    fetchPosts()
+  }, [])
+ 
+  if (!posts) return <div>Loading...</div>
+ 
   return (
-    <div>
-      <h1>Home</h1>
-      <p>Hello World! This is the Home page</p>
-      <p>
-        Visit the <Link href="/about">About</Link> page.
-      </p>
-    </div>
-  );
-};
-
-export default Home;
+    <ul>
+      {posts.map((post) => (
+        <li key={post.id}>{post.title}</li>
+      ))}
+    </ul>
+  )
+}
